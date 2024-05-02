@@ -1,44 +1,42 @@
 class SudokuSolver {
-  validate(puzzleString) {
-
-    if (puzzleString.length != 81) {
-      return { error: "Expected puzzle to be 81 characters long" };
+  validate(puzzle) {
+    if (puzzle.length != 81) {
+      return false;
     }
 
-    if (!/^[1-9.]*$/.test(puzzleString)) {
-      return { error: "Invalid characters in puzzle" };
+    //Check if string contains anything other than 1-9 or .
+    if (!/^[1-9.]*$/.test(puzzle)) {
+      return false;
     }
-
-    
 
     return true;
   }
 
-  checkRowPlacement(puzzleString, row, column, value) {
+  checkRowPlacement(puzzle, row, column, value) {
     for (let i = 0; i < 9; i++) {
-      if (puzzleString[i][column] == value) {
+      if (puzzle[row][i] == value) {
         return false;
       }
     }
     return true;
   }
 
-  checkColPlacement(puzzleString, row, column, value) {
+  checkColPlacement(puzzle, row, column, value) {
     for (let i = 0; i < 9; i++) {
-      if (puzzleString[row][i] == value) {
+      if (puzzle[i][column] == value) {
         return false;
       }
     }
     return true;
   }
 
-  checkRegionPlacement(puzzleString, row, column, value) {
+  checkRegionPlacement(puzzle, row, column, value) {
     let boxStartRow = row - (row % 3);
     let boxStartCol = column - (column % 3);
 
     for (let i = boxStartRow; i < boxStartRow + 3; i++) {
       for (let j = boxStartCol; j < boxStartCol + 3; j++) {
-        if (puzzleString[i][j] == value) {
+        if (puzzle[i][j] == value) {
           return false;
         }
       }
@@ -48,6 +46,11 @@ class SudokuSolver {
   }
 
   solve(puzzleString) {
+    console.log(puzzleString);
+    if (!this.validate(puzzleString)) {
+      return false;
+    }
+
     let puzzle = puzzleString.split("");
     let array = [];
 
@@ -99,6 +102,30 @@ class SudokuSolver {
       this.checkColPlacement(board, row, col, num) &&
       this.checkRegionPlacement(board, row, col, num)
     );
+  }
+
+  findConflicts(puzzleString, row, col, value) {
+    let conflict = [];
+    let puzzle = puzzleString.split("");
+    let board = [];
+
+    for (let i = 0; i < 9; i++) {
+      board.push(puzzle.slice(i * 9, i * 9 + 9));
+    }
+
+    if (!this.checkColPlacement(board, row, col, value)) {
+      conflict.push("column");
+    }
+
+    if (!this.checkRowPlacement(board, row, col, value)) {
+      conflict.push("row");
+    }
+
+    if (!this.checkRegionPlacement(board, row, col, value)) {
+      conflict.push("region");
+    }
+
+    return conflict;
   }
 }
 

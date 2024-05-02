@@ -28,51 +28,91 @@ suite("Unit Tests", () => {
 
   test("Logic handles a puzzle string with invalid characters (not 1-9 or .)", function () {
     let puzzle = puzzlesAndSolutions[0][0].replace("1", "A");
-    assert.deepEqual(solver.validate(puzzle), {
-      error: "Invalid characters in puzzle",
-    });
+    assert.equal(solver.validate(puzzle), false);
   });
 
   test("Logic handles a puzzle string that is not 81 characters in length", function () {
     let puzzle = puzzlesAndSolutions[0][0].slice(1);
-    assert.deepEqual(solver.validate(puzzle), {
-      error: "Expected puzzle to be 81 characters long",
-    });
+    assert.equal(solver.validate(puzzle), false);
   });
 
   test("Logic handles a valid row placement", function () {
-    let puzzle = puzzlesAndSolutions[0][0];
-    assert.equal(solver.checkRowPlacement(puzzle, 0, 0, 1), true);
+    let puzzleString = puzzlesAndSolutions[0][0].split("");
+
+    let board = [];
+
+    for (let i = 0; i < 9; i++) {
+      board.push(puzzleString.slice(i * 9, i * 9 + 9));
+    }
+
+    assert.equal(solver.checkRowPlacement(board, 1, 0, 5), true);
   });
 
   test("Logic handles an invalid row placement", function () {
-    let puzzle = puzzlesAndSolutions[0][0];
-    assert.equal(solver.checkRowPlacement(puzzle, 0, 0, 5), false);
+    let puzzleString = puzzlesAndSolutions[0][0].split("");
+
+    let board = [];
+
+    for (let i = 0; i < 9; i++) {
+      board.push(puzzleString.slice(i * 9, i * 9 + 9));
+    }
+
+    assert.equal(solver.checkRowPlacement(board, 0, 1, 1), false);
   });
 
   test("Logic handles a valid column placement", function () {
-    let puzzle = puzzlesAndSolutions[0][0];
-    assert.equal(solver.checkColPlacement(puzzle, 0, 0, 1), true);
+    let puzzleString = puzzlesAndSolutions[0][0].split("");
+
+    let board = [];
+
+    for (let i = 0; i < 9; i++) {
+      board.push(puzzleString.slice(i * 9, i * 9 + 9));
+    }
+
+    assert.equal(solver.checkColPlacement(board, 0, 1, 3), true);
   });
 
   test("Logic handles an invalid column placement", function () {
-    let puzzle = puzzlesAndSolutions[0][0];
-    assert.equal(solver.checkColPlacement(puzzle, 0, 0, 5), false);
+    let puzzleString = puzzlesAndSolutions[0][0].split("");
+
+    let board = [];
+
+    for (let i = 0; i < 9; i++) {
+      board.push(puzzleString.slice(i * 9, i * 9 + 9));
+    }
+
+    assert.equal(solver.checkColPlacement(board, 0, 0, 5), true);
   });
 
   test("Logic handles a valid region (3x3 grid) placement", function () {
-    let puzzle = puzzlesAndSolutions[0][0];
-    assert.equal(solver.checkRegionPlacement(puzzle, 0, 0, 1), true);
+    let puzzleString = puzzlesAndSolutions[0][0].split("");
+
+    let board = [];
+
+    for (let i = 0; i < 9; i++) {
+      board.push(puzzleString.slice(i * 9, i * 9 + 9));
+    }
+
+    assert.equal(solver.checkRegionPlacement(board, 0, 0, 1), false);
   });
 
   test("Logic handles an invalid region (3x3 grid) placement", function () {
-    let puzzle = puzzlesAndSolutions[0][0];
-    assert.equal(solver.checkRegionPlacement(puzzle, 0, 0, 5), false);
+    let puzzleString = puzzlesAndSolutions[0][0].split("");
+
+    let board = [];
+
+    for (let i = 0; i < 9; i++) {
+      board.push(puzzleString.slice(i * 9, i * 9 + 9));
+    }
+
+    assert.equal(solver.checkRegionPlacement(board, 0, 0, 5), false);
   });
 
   test("Valid puzzle strings pass the solver", function () {
     let puzzle = puzzlesAndSolutions[0][0];
-    assert.equal(solver.solve(puzzle), true);
+    let solution = puzzlesAndSolutions[0][1];
+
+    assert.equal(solver.solve(puzzle).flat().join(""), solution);
   });
 
   test("Invalid puzzle strings fail the solver", function () {

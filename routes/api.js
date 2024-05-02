@@ -29,7 +29,6 @@ module.exports = function (app) {
 
     let row = coordinate[0].charCodeAt(0) - "A".charCodeAt(0);
     let col = parseInt(coordinate[1]) - 1;
-    let conflict = [];
 
     let solution = solver.solve(puzzle);
     //Check the placement of the value and compare with solution
@@ -37,16 +36,7 @@ module.exports = function (app) {
       if (solution[row][col] === value) return res.json({ valid: true });
     }
 
-    if (!solver.checkRowPlacement(solution, row, col, value))
-      conflict.push("row");
-
-    if (!solver.checkColPlacement(solution, row, col, value))
-      conflict.push("column");
-
-    if (!solver.checkRegionPlacement(solution, row, col, value))
-      conflict.push("region");
-
-    if (conflict.length === 0) return res.json({ valid: true });
+    let conflict = solver.findConflicts(puzzle, row, col, value);
 
     res.json({ valid: false, conflict });
   });
